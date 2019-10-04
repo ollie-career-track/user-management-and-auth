@@ -75,8 +75,13 @@ describe('Animals API', () => {
   });
 
   it('deletes an animal from a user', () => {
-
-
+    return postAnimal(animal)
+      .then(animal => {
+        return request
+          .delete(`/api/animals/${animal._id}`)
+          .set('Authorization', user.token)
+          .expect(200);
+      });
   });
 
   it('gets a list of animals any user can access', () => {
