@@ -62,7 +62,7 @@ describe('Animals API', () => {
     return postAnimal(animal)
       .then(animal => {
         animal.hasTail = false;
-        return request 
+        return request
           .put(`/api/animals/${animal._id}`)
           .set('Authorization', user.token)
           .send(animal)
@@ -75,17 +75,51 @@ describe('Animals API', () => {
   });
 
   it('deletes an animal from a user', () => {
-    return postAnimal(animal)
-      .then(animal => {
-        return request
-          .delete(`/api/animals/${animal._id}`)
-          .set('Authorization', user.token)
-          .expect(200);
-      });
+    return postAnimal(animal).then(animal => {
+      return request
+        .delete(`/api/animals/${animal._id}`)
+        .set('Authorization', user.token)
+        .expect(200);
+    });
   });
 
   it('gets a list of animals any user can access', () => {
+    const firstAnimal = {
+      name: 'dog 1',
+      hasTail: true
+    };
 
+    return Promise.all([
+      postAnimal(firstAnimal),
+      postAnimal({ name: 'dog 2', hasTail: true }),
+      postAnimal({ name: 'dog 3', hasTail: true })
+    ])
+      .then(() => {
+        return request
+          .get('/api/animals')
+          .set('Authorization', user.token)
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.length).toBe(3);
+        expect(body[0]).toMatchInlineSnapshot(
+          {
+            _id: expect.any(String),
+            owner: expect.any(String)
+          },
 
+          `
+          Object {
+            "__v": 0,
+            "_id": Any<String>,
+            "diet": Array [],
+            "hasTail": true,
+            "limbs": 5,
+            "name": "dog 1",
+            "owner": Any<String>,
+          }
+        `
+        );
+      });
   });
 });
