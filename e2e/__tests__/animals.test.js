@@ -21,7 +21,16 @@ describe('Animals API', () => {
     hasTail: true
   };
 
-  it.only('posts an animal for this user', () => {
+  function postAnimal(animal) {
+    return request
+      .post('/api/animals')
+      .set('Authorization', user.token)
+      .send(animal)
+      .expect(200)
+      .then(({ body }) => body);
+  }
+
+  it('posts an animal for this user', () => {
     return request
       .post('/api/animals')
       .set('Authorization', user.token)
@@ -49,9 +58,29 @@ describe('Animals API', () => {
       });
   });
 
-  it('updates an animal for a user', () => {});
+  it('updates an animal for a user', () => {
+    return postAnimal(animal)
+      .then(animal => {
+        animal.hasTail = false;
+        return request 
+          .put(`/api/animals/${animal._id}`)
+          .set('Authorization', user.token)
+          .send(animal)
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.owner).toBe(user._id);
+        expect(body.hasTail).toBe(false);
+      });
+  });
 
-  it('deletes an animal from a user', () => {});
+  it('deletes an animal from a user', () => {
 
-  it('gets a list of animals any user can access', () => {});
+
+  });
+
+  it('gets a list of animals any user can access', () => {
+
+
+  });
 });
