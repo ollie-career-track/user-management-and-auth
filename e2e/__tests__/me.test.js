@@ -25,6 +25,15 @@ describe('Me API', () => {
       .then(({ body }) => body);
   }
 
+  function putAnimal(animal) {
+    return request
+      .put(`/api/me/favorites/${animal._id}`)
+      .set('Authorization', user.token)
+      .send(user)
+      .expect(200)
+      .then(({ body }) => body);
+  }
+
   it.skip('updates user favorites with an animal', () => {
     return postAnimal(animal)
       .then(animal => {
@@ -45,29 +54,19 @@ describe('Me API', () => {
   });
 
   it.skip('gets a user favorites list', () => {
-    // const firstAnimal = {
-    //   name: 'dog 1',
-    //   hasTail: true
-    // };
-    // return Promise.all([
-    //   postAnimal(firstAnimal),
-    //   postAnimal({ name: 'dog 2', hasTail: true }),
-    //   postAnimal({ name: 'dog 3', hasTail: true })
-    // ])
-    //   .then(() => {
-    //     return request
-    //       .get('/api/me/favorites')
-    //       .set('Authorization', user.token)
-    //       .expect(200);
-    //   })
-    //   .then(({ body }) => {
-    //     expect(body.length).toBe(3);
-    //     expect(body[0]).toMatchInlineSnapshot(
-    //       {
-    //         _id: expect.any(String),
-    //         owner: expect.any(String)
-    //       },
-    //     );
-    //   });
+    
+  });
+
+  it.only('removes an animal from user favorites', () => {
+    return postAnimal(animal)
+      .then(animal => {
+        return putAnimal(animal);
+      })
+      .then(animal => {
+        return request
+          .delete(`/api/me/favorites/${animal._id}`)
+          .set('Authorization', user.token)
+          .expect(200);
+      });
   });
 });
