@@ -1,21 +1,21 @@
-const request = require('../request');
+// const request = require('../request');
 const { dropCollection } = require('../db');
-const { signupUser } = require('../data-helpers');
+// const { signupUser } = require('../data-helpers');
 
-describe('Admin API', () => {
+describe.skip('Admin API', () => {
   beforeEach(() => dropCollection('users'));
 
-  const testUser = {
-    email: 'tester@tester.com',
-    password: '123test'
-  };
+  // const testUser = {
+  //   email: 'tester@tester.com',
+  //   password: '123test'
+  // };
 
-  let user = null;
+  // let user = null;
 
-  beforeEach(() => {
-    return signupUser(testUser)
-      .then(newUser => user = newUser);
-  });
+  // beforeEach(() => {
+  //   return signupUser(testUser)
+  //     .then(newUser => user = newUser);
+  // });
 
   it('allows an admin to add a role to a user', () => {
 
