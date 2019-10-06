@@ -54,10 +54,28 @@ describe('Me API', () => {
   });
 
   it.skip('gets a user favorites list', () => {
-    
+    return postAnimal(animal)
+      .then(animal => {
+        return putAnimal(animal);
+      })
+      .then(() => {
+        return request
+          .get(`/api/me/favorites/${user._id}`)
+          .set('Authorization', user.token)
+          .send(user)
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.length).toBe(1);
+        expect(body).toMatchInlineSnapshot(`
+          Array [
+            "5d993aa8ead1bc15fa790bb2",
+          ]
+        `);
+      });
   });
 
-  it.only('removes an animal from user favorites', () => {
+  it('removes an animal from user favorites', () => {
     return postAnimal(animal)
       .then(animal => {
         return putAnimal(animal);
