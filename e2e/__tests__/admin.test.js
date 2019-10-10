@@ -37,7 +37,7 @@ describe('Admin API', () => {
     return signupUser(newAdmin).then(newUser => (user = newUser));
   });
 
-  it.only('allows an admin to add a role to a user', () => {
+  it('allows an admin to add a role to a user', () => {
     return request
       .put(`/api/auth/users/${user._id}/roles/${'admin'}`)
       .set('Authorization', admin.token)
@@ -54,7 +54,7 @@ describe('Admin API', () => {
       .expect(200);
   });
 
-  it('allows an admin to get the ids, emails, and roles of all users', () => {
+  it.skip('allows an admin to get the ids, emails, and roles of all users', () => {
     return request
       .get('/api/auth/users')
       .set('Authorization', admin.token)
