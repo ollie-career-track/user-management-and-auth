@@ -90,5 +90,13 @@ describe('Comic API', () => {
       });
   });
 
-  it('only allows admins to delete a comic', () => {});
+  it.only('only allows admins to delete a comic', () => {
+    return postComic(comic)
+      .then(comic => {
+        return request
+          .delete(`/api/comics/${comic._id}`)
+          .set('Authorization', admin.token)
+          .expect(200);
+      });
+  });
 });
