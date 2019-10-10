@@ -28,6 +28,11 @@ describe('Comic API', () => {
       });
   });
 
+  let user = null;
+  beforeEach(() => {
+    return signupUser().then(newUser => (user = newUser));
+  });
+
   const comic = {
     title: 'comic',
     author: 'comic author'
@@ -42,12 +47,39 @@ describe('Comic API', () => {
       .then(({ body }) => body);
   }
 
-  // let user = null;
-  // beforeEach(() => {
-  //   return signupUser().then(newUser => (user = newUser));
-  // });
+  it('gets a list of comics for any authorized user', () => {
+    return Promise.all([
+      postComic(comic),
+      postComic({ title: 'comic 2', author: 'random author' }),
+      postComic({ title: 'comic 3', author: 'random author' })
+    ])
+      .then(() => {
+        return request
+          .get('/api/comics')
+          .set('Authorization', user.token)
+          .expect(200);
+      })
+      .then(({ body }) => {
+        expect(body.length).toBe(3);
+        expect(body[0]).toMatchInlineSnapshot(
+          {
+            _id: expect.any(String)
+          },
 
-  it('gets a list of comics for any authorized user', () => {});
+          `
+          Object {
+            "__v": 0,
+            "_id": Any<String>,
+            "author": "comic author",
+            "chapters": 1,
+            "genre": Array [],
+            "ongoing": true,
+            "title": "comic",
+          }
+        `
+        );
+      });
+  });
 
   it('only allows admins to post a comic', () => {
     return request
@@ -90,13 +122,12 @@ describe('Comic API', () => {
       });
   });
 
-  it.only('only allows admins to delete a comic', () => {
-    return postComic(comic)
-      .then(comic => {
-        return request
-          .delete(`/api/comics/${comic._id}`)
-          .set('Authorization', admin.token)
-          .expect(200);
-      });
+  it('only allows admins to delete a comic', () => {
+    return postComic(comic).then(comic => {
+      return request
+        .delete(`/api/comics/${comic._id}`)
+        .set('Authorization', admin.token)
+        .expect(200);
+    });
   });
 });
