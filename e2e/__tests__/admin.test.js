@@ -54,7 +54,7 @@ describe('Admin API', () => {
       .expect(200);
   });
 
-  it.skip('allows an admin to get the ids, emails, and roles of all users', () => {
+  it('allows an admin to get the ids, emails, and roles of all users', () => {
     return request
       .get('/api/auth/users')
       .set('Authorization', admin.token)
@@ -66,6 +66,15 @@ describe('Admin API', () => {
             _id: expect.any(String)
           },
 
+          `
+          Object {
+            "_id": Any<String>,
+            "email": "boot@boot.com",
+            "roles": Array [
+              "admin",
+            ],
+          }
+        `
         );
       });
   });
